@@ -1,0 +1,116 @@
+import { tr } from '../i18n';
+import FractionShape from './FractionShape';
+// Imaginea unei întrebări: grupe egale de obiecte (ex. 18 flori în 3 grupe).
+function Picture({ picture }) {
+  const { icon, groups, per, holder } = picture;
+  return (
+    <div className="question-picture" aria-hidden="true">
+      {Array.from({ length: groups }, (_, g) => (
+        <div key={g} className="question-picture-group">
+          <div className="question-picture-items" style={{ gridTemplateColumns: `repeat(${per === 4 ? 2 : Math.min(per, 3)}, 1fr)` }}>
+            {Array.from({ length: per }, (_, i) => <span key={i}>{icon}</span>)}
+          </div>
+          {holder && <div className="question-picture-holder">{holder}</div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Imaginile din Evaluarea Națională: tabelul cu date, afișul și plăcuțele cu forme.
+function Visual({ visual }) {
+  if (visual.type === 'table') {
+    return (
+      <table className="exam-table">
+        <caption>{tr(visual.caption)}</caption>
+        <tbody>
+          <tr>{visual.rows.map(([icon, name]) => <th key={name}><span aria-hidden="true">{icon}</span> {tr(name)}</th>)}</tr>
+          <tr>{visual.rows.map(([, name, value]) => <td key={name}>{typeof value === 'string' ? tr(value) : value}</td>)}</tr>
+        </tbody>
+      </table>
+    );
+  }
+  if (visual.type === 'poster') {
+    return (
+      <div className={`exam-poster${visual.wide ? ' wide' : ''}`} aria-label="Imaginea din test">
+        {visual.title && (
+          <div className="exam-poster-title">{visual.title.map(line => <div key={line}>{tr(line)}</div>)}</div>
+        )}
+        <div className="exam-poster-grid" aria-hidden="true">{visual.cells.map((cell, i) => <span key={i}>{cell}</span>)}</div>
+      </div>
+    );
+  }
+  // Scăderea în coloană se desenează jos, cu căsuțele în care copilul scrie rezultatul (ColumnAnswer).
+  if (visual.type === 'column') return null;
+  if (visual.type === 'fraction') {
+    return (
+      <div className="fraction-visual">
+        <FractionShape shape={visual.shape} parts={visual.parts} filled={visual.filled} filledIdx={visual.filledIdx}
+          widths={visual.widths} size={130} />
+      </div>
+    );
+  }
+  // Două figuri de comparat, cu „?” între ele.
+  if (visual.type === 'fractionPair') {
+    return (
+      <div className="fraction-visual fraction-pair">
+        <FractionShape {...visual.left} size={120} />
+        <span className="fraction-pair-sign">?</span>
+        <FractionShape {...visual.right} size={120} />
+      </div>
+    );
+  }
+  return (
+    <div className="exam-shapes" aria-label="Formele din test">
+      {visual.items.map(([shape, icon]) => (
+        <span key={shape} className={`exam-shape ${shape}`}>{shape === 'triangle' ? <b>{icon}</b> : icon}</span>
+      ))}
+    </div>
+  );
+}
+
+// Pașii unei probleme: cei rezolvați cu ✅, cel curent evidențiat, cei următori ascunși.
+function Steps({ current }) {
+  return (
+    <ol className="question-steps">
+      {current.steps.slice(0, current.stepIndex + 1).map((step, i) => (
+        <li key={i} className={i < current.stepIndex ? 'done' : 'current'}>
+          <b>{tr('Pasul {i} din {n}:', { i: i + 1, n: current.steps.length })}</b> {tr(step.question)}
+          {i < current.stepIndex && <span className="question-step-answer"> ✅ {step.answer}</span>}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+export default function QuestionDisplay({ current }) {
+  if (current.steps) {
+    return (
+      <div className="question-word">
+        <span className="wp-badge">{tr(current.badge || '📖 Problemă')} · {tr('rezolvă pe pași')}</span>
+        <br />
+        {tr(current.problemText)}
+        {current.visual && <Visual visual={current.visual} />}
+        {current.picture && <Picture picture={current.picture} />}
+        <Steps current={current} />
+      </div>
+    );
+  }
+  if (current.isWordProblem) {
+    return (
+      <div className="question-word">
+        <span className="wp-badge">{tr(current.badge || '📖 Problemă')}</span>
+        <br />
+        {tr(current.problemText)}
+        {current.visual && <Visual visual={current.visual} />}
+        {current.picture && <Picture picture={current.picture} />}
+      </div>
+    );
+  }
+  return (
+    <>
+      {current.badge && <div><span className="wp-badge">{tr(current.badge)}</span></div>}
+      <div className="question">{current.a} × {current.b} = ?</div>
+    </>
+  );
+}

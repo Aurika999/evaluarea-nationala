@@ -1,0 +1,22 @@
+.tabla-inmultirii .exam-app { max-width: 1000px; }
+.tabla-inmultirii .exam-logo { border: 0; background: none; padding: 0; text-align: left; }
+.tabla-inmultirii .exam-lang { border: 2px solid #5a3216; border-radius: 12px; padding: 5px 6px; font-weight: 900; background: #fffaf0; }
+.tabla-inmultirii .exam-home { margin-top: 18px; }
+.tabla-inmultirii .exam-intro { color: #fff; font-weight: 900; font-size: 18px; text-align: center; margin: 0 0 18px; }
+.tabla-inmultirii .exam-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.tabla-inmultirii .exam-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 16px;
+  background: #fff; border: 5px solid #fff; border-radius: 25px; box-shadow: 0 9px 0 #3b78a8; color: #24304a;
+}
+.tabla-inmultirii .exam-card:hover { transform: translateY(-2px); }
+.tabla-inmultirii .exam-card-icon { font-size: 64px; line-height: 1; }
+.tabla-inmultirii .exam-card b { font-size: 20px; color: #6d42a9; }
+.tabla-inmultirii .exam-card span { font-weight: 700; }
+.tabla-inmultirii .exam-card small { color: #2b6f5c; font-weight: 900; }
+.tabla-inmultirii .exam-card-cta {
+  margin-top: 6px; padding: 8px 18px; border-radius: 16px; color: #fff; font-weight: 900;
+  background: linear-gradient(180deg, #2f6df0, #1d3fb5); box-shadow: 0 4px 0 #142b80;
+}
+.tabla-inmultirii .exam-note { color: #cfe8e8; text-align: center; font-size: 13px; margin-top: 22px; }
+.tabla-inmultirii .exam-game { margin-top: 15px; display: flex; flex-direction: column; gap: 12px; }
+.tabla-inmultirii .exam-back { align-self: flex-start; }
